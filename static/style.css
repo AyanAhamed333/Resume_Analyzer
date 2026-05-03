@@ -1,0 +1,494 @@
+:root {
+    --bg-color: #fffaf0; /* Warm paper-like background */
+    --line-color: #e2e8f0; /* Notebook lines */
+    --text-main: #334155; /* Dark ink */
+    --text-muted: #64748b;
+    --primary-color: #ffb7b2; /* Pastel pink */
+    --secondary-color: #b2e2f2; /* Pastel blue */
+    --success-color: #a7f3d0; /* Pastel green */
+    --warning-color: #fecaca; /* Pastel red */
+    --ink-color: #1e293b;
+    --border-doodle: 255px 15px 225px 15px / 15px 225px 15px 255px;
+    --border-doodle-alt: 15px 225px 15px 255px / 255px 15px 225px 15px;
+    --shadow-doodle: 6px 6px 0px var(--ink-color);
+    --shadow-doodle-hover: 3px 3px 0px var(--ink-color);
+    --transition: all 0.2s ease-in-out;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Patrick Hand', cursive, sans-serif;
+    font-size: 1.2rem;
+    background-color: var(--bg-color);
+    /* Notebook paper lines effect */
+    background-image: repeating-linear-gradient(transparent, transparent 31px, var(--line-color) 32px);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 2rem 1rem;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Cute decorative blobs */
+.background-blobs {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.blob {
+    position: absolute;
+    border: 3px solid var(--ink-color);
+    opacity: 0.8;
+}
+
+.blob-1 {
+    top: 5%;
+    left: 5%;
+    width: 200px;
+    height: 150px;
+    background: var(--secondary-color);
+    border-radius: var(--border-doodle);
+    transform: rotate(-10deg);
+}
+
+.blob-2 {
+    bottom: 10%;
+    right: 5%;
+    width: 180px;
+    height: 180px;
+    background: #fef08a; /* pastel yellow */
+    border-radius: var(--border-doodle-alt);
+    transform: rotate(15deg);
+}
+
+/* Doodly Quotes in Shapes */
+.background-doodles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0; /* behind the container */
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.doodle-note {
+    position: absolute;
+    border: 3px solid var(--ink-color);
+    border-radius: var(--border-doodle);
+    padding: 0.8rem 1.2rem;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 1.3rem;
+    color: var(--ink-color);
+    box-shadow: 4px 4px 0px var(--ink-color);
+    max-width: 180px;
+    text-align: center;
+    opacity: 0.8;
+    background: #fff;
+}
+
+.note-1 { top: 15%; left: 8%; transform: rotate(-8deg); background: #fecaca; }
+.note-2 { top: 40%; right: 6%; transform: rotate(12deg); background: #bfdbfe; }
+.note-3 { top: 65%; left: 6%; transform: rotate(-5deg); background: #a7f3d0; border-radius: var(--border-doodle-alt); }
+.note-4 { top: 25%; right: 10%; transform: rotate(8deg); background: #fde68a; }
+.note-5 { top: 80%; right: 12%; transform: rotate(-10deg); background: #ddd6fe; border-radius: var(--border-doodle-alt); }
+
+@media (max-width: 1100px) {
+    .doodle-note {
+        opacity: 0.2; /* fade out on smaller screens */
+    }
+}
+@media (max-width: 850px) {
+    .background-doodles {
+        display: none; /* hide completely on mobile/tablet */
+    }
+}
+
+.container {
+    width: 100%;
+    max-width: 800px;
+    z-index: 1;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    position: relative;
+}
+
+header h1 {
+    font-size: 3.5rem;
+    font-weight: 400;
+    color: var(--ink-color);
+    margin-bottom: 0.5rem;
+    display: inline-block;
+    position: relative;
+}
+
+/* Doodle underline for header */
+header h1::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: -5%;
+    width: 110%;
+    height: 6px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    z-index: -1;
+    transform: rotate(-1deg);
+}
+
+header p {
+    color: var(--text-muted);
+    font-size: 1.3rem;
+}
+
+/* Doodly Cards */
+.card {
+    background: #ffffff;
+    border: 3px solid var(--ink-color);
+    border-radius: var(--border-doodle);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-doodle);
+    transition: var(--transition);
+}
+
+.card:hover {
+    transform: translateY(-2px) rotate(0.5deg);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 1.3rem;
+    color: var(--ink-color);
+}
+
+textarea, select {
+    width: 100%;
+    background: #ffffff;
+    border: 3px solid var(--ink-color);
+    border-radius: var(--border-doodle-alt);
+    padding: 1rem;
+    color: var(--ink-color);
+    font-family: 'Patrick Hand', cursive;
+    font-size: 1.2rem;
+    transition: var(--transition);
+    box-shadow: inset 2px 2px 0px rgba(0,0,0,0.05);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 150px;
+}
+
+textarea:focus, select:focus {
+    outline: none;
+    background: #f8fafc;
+    border-color: var(--primary-color);
+}
+
+/* Custom File Upload */
+.file-upload-wrapper input[type="file"] {
+    display: none;
+}
+
+.file-label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    background: var(--secondary-color);
+    border: 3px dashed var(--ink-color);
+    border-radius: var(--border-doodle);
+    cursor: pointer;
+    transition: var(--transition);
+    color: var(--ink-color);
+    font-weight: 600;
+    font-size: 1.3rem;
+}
+
+.file-label:hover {
+    background: #93c5fd;
+    transform: rotate(-1deg);
+}
+
+.divider {
+    text-align: center;
+    margin: 1.5rem 0;
+    position: relative;
+}
+
+.divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--ink-color);
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.divider span {
+    position: relative;
+    z-index: 2;
+    background: #ffffff;
+    border: 3px solid var(--ink-color);
+    border-radius: var(--border-doodle);
+    padding: 0.2rem 1rem;
+    color: var(--ink-color);
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 1rem;
+    border: 3px solid var(--ink-color);
+    border-radius: var(--border-doodle-alt);
+    font-size: 1.5rem;
+    font-weight: 600;
+    font-family: 'Patrick Hand', cursive;
+    cursor: pointer;
+    transition: var(--transition);
+    color: var(--ink-color);
+    box-shadow: var(--shadow-doodle);
+}
+
+.primary-btn {
+    background: var(--primary-color);
+}
+
+.primary-btn:hover {
+    transform: translate(3px, 3px);
+    box-shadow: var(--shadow-doodle-hover);
+    background: #fca5a5;
+}
+
+.primary-btn:active {
+    transform: translate(6px, 6px);
+    box-shadow: 0px 0px 0px var(--ink-color);
+}
+
+.primary-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: var(--shadow-doodle);
+}
+
+.hidden {
+    display: none !important;
+}
+
+.status-message {
+    margin-top: 0.5rem;
+    font-size: 1.1rem;
+    text-align: center;
+    font-weight: 600;
+}
+
+.status-message.error {
+    color: #ef4444; /* Doodly red */
+}
+
+/* Loader Doodle */
+.loader {
+    width: 20px;
+    height: 20px;
+    border: 3px solid var(--ink-color);
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+    margin-left: 10px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Results Section */
+.score-container {
+    margin-bottom: 2rem;
+    border: 3px dashed var(--ink-color);
+    padding: 1.5rem;
+    border-radius: var(--border-doodle);
+    background: #fff;
+    position: relative;
+}
+
+/* Little tape doodle holding the score box */
+.score-container::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-3deg);
+    width: 80px;
+    height: 25px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid #ccc;
+    box-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.score-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.score-header h3 {
+    font-size: 1.8rem;
+    color: var(--ink-color);
+}
+
+.score-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--ink-color);
+}
+
+.progress-bar-bg {
+    width: 100%;
+    height: 20px;
+    background: #f1f5f9;
+    border: 3px solid var(--ink-color);
+    border-radius: var(--border-doodle-alt);
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: repeating-linear-gradient(
+        45deg,
+        var(--success-color),
+        var(--success-color) 10px,
+        #6ee7b7 10px,
+        #6ee7b7 20px
+    );
+    border-right: 3px solid var(--ink-color);
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.results-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 600px) {
+    .results-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.result-box {
+    background: #ffffff;
+    border: 3px solid var(--ink-color);
+    border-radius: var(--border-doodle);
+    padding: 1.5rem;
+    box-shadow: 4px 4px 0px var(--ink-color);
+}
+
+.result-box h3 {
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+    color: var(--ink-color);
+}
+
+.skill-list {
+    list-style: none;
+}
+
+.skill-list li {
+    display: inline-block;
+    padding: 0.3rem 0.6rem;
+    margin: 0.3rem;
+    border: 2px solid var(--ink-color);
+    border-radius: var(--border-doodle-alt);
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    background: #fff;
+}
+
+.success-box {
+    background: #f0fdf4;
+}
+
+.success-box .skill-list li {
+    background: var(--success-color);
+}
+
+.warning-box {
+    background: #fef2f2;
+}
+
+.warning-box .skill-list li {
+    background: var(--warning-color);
+}
+
+.suggestions-box {
+    background: #fffbeb;
+    border: 3px solid var(--ink-color);
+    border-radius: var(--border-doodle-alt);
+    padding: 1.5rem;
+    box-shadow: 4px 4px 0px var(--ink-color);
+}
+
+.suggestions-box h3 {
+    color: var(--ink-color);
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+#suggestionsList {
+    list-style-type: none;
+    color: var(--ink-color);
+}
+
+#suggestionsList li {
+    margin-bottom: 0.8rem;
+    line-height: 1.4;
+    position: relative;
+    padding-left: 2rem;
+}
+
+#suggestionsList li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--ink-color);
+    font-weight: bold;
+}
