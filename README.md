@@ -13,7 +13,7 @@ A complete full-stack web application designed to analyze resumes against specif
 
 ## Tech Stack
 - **Backend**: Python, Flask, PyPDF2, SQLite
-- **Frontend**: HTML5, Vanilla CSS, Vanilla JavaScript (Fetch API)
+- **Frontend**: HTML5, Vanilla CSS, Vanilla JavaScript (Fetch API).
 
 ## How to Run
 
