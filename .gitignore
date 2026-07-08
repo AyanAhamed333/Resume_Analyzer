@@ -1,3 +1,30 @@
+# Python cache
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+
+# Local Database files
 *.db
+chroma_db/
+
+# Credentials & Configs (Crucial!)
+.env
+.env.local
+
+# Virtual environments
+venv/
+env/
+.venv/
+ENV/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# User PDF uploads (Ignore private resumes)
+*.pdf
+
+# Editor folders
+.vscode/
+.idea/

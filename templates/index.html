@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Resume Analyzer</title>
     <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <div class="background-blobs">
@@ -27,83 +27,137 @@
             <p>Upload your resume or paste the text below to analyze your fit for the job.</p>
         </header>
 
+        <!-- Notebook-style Tab Selection Controls -->
+        <div class="tabs-nav">
+            <button class="tab-btn active" id="tab-analyzer-btn">📄 Resume Analyzer</button>
+            <button class="tab-btn" id="tab-chat-btn">💬 Chat with Resume</button>
+        </div>
+
         <main>
-            <div class="card input-section">
-                <div class="form-group file-upload-wrapper">
-                    <label for="pdfUpload" class="file-label">
-                        <span id="file-label-text">📄 Upload PDF Resume</span>
-                        <input type="file" id="pdfUpload" accept="application/pdf">
-                    </label>
-                    <div id="uploadStatus" class="status-message"></div>
+            <!-- 1. RESUME ANALYZER TAB -->
+            <div id="analyzer-panel" class="tab-panel">
+                <div class="card input-section">
+                    <div class="form-group file-upload-wrapper">
+                        <label for="pdfUpload" class="file-label">
+                            <span id="file-label-text">📄 Upload PDF Resume</span>
+                            <input type="file" id="pdfUpload" accept="application/pdf">
+                        </label>
+                        <div id="uploadStatus" class="status-message"></div>
+                    </div>
+
+                    <div class="divider"><span>OR</span></div>
+
+                    <div class="form-group">
+                        <label for="resumeText">Paste Resume Text</label>
+                        <textarea id="resumeText" placeholder="Paste your resume content here..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="roleSelect">Target Role</label>
+                        <select id="roleSelect">
+                            <option value="" disabled selected>Select a job role</option>
+                            <option value="backend">Backend Developer (Python/Flask/SQL)</option>
+                            <option value="data">Data Analyst (Python/Pandas/SQL)</option>
+                            <option value="marketing">Marketing Specialist (SEO/Content)</option>
+                            <option value="sales">Sales Representative (CRM/B2B)</option>
+                            <option value="hr">Human Resources (Recruitment/Payroll)</option>
+                            <option value="teacher">Teacher (Curriculum/Grading)</option>
+                        </select>
+                    </div>
+
+                    <div class="divider"><span>OR</span></div>
+
+                    <div class="form-group">
+                        <label for="jdText">Paste Job Description (Optional)</label>
+                        <textarea id="jdText" placeholder="Paste the Job Description here to extract keywords automatically instead of selecting a role..."></textarea>
+                    </div>
+
+                    <button id="analyzeBtn" class="btn primary-btn">
+                        <span class="btn-text">Analyze Resume</span>
+                        <span class="loader hidden"></span>
+                    </button>
+                    <div id="analyzeStatus" class="status-message error"></div>
                 </div>
 
-                <div class="divider"><span>OR</span></div>
+                <div id="resultsSection" class="card results-section hidden">
+                    <h2>Analysis Results</h2>
+                    
+                    <div class="score-container">
+                        <div class="score-header">
+                            <h3>Match Score</h3>
+                            <span id="scoreValueText" class="score-number">0%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div id="scoreProgressBar" class="progress-bar-fill"></div>
+                        </div>
+                    </div>
 
-                <div class="form-group">
-                    <label for="resumeText">Paste Resume Text</label>
-                    <textarea id="resumeText" placeholder="Paste your resume content here..."></textarea>
+                    <div class="results-grid">
+                        <div class="result-box success-box">
+                            <h3>✅ Skills Found</h3>
+                            <ul id="skillsFoundList" class="skill-list"></ul>
+                        </div>
+
+                        <div class="result-box warning-box">
+                            <h3>❌ Missing Skills</h3>
+                            <ul id="missingSkillsList" class="skill-list"></ul>
+                        </div>
+                    </div>
+
+                    <div class="suggestions-box">
+                        <h3>💡 Suggestions for Improvement</h3>
+                        <ul id="suggestionsList"></ul>
+                    </div>
                 </div>
-
-                <div class="form-group">
-                    <label for="roleSelect">Target Role</label>
-                    <select id="roleSelect">
-                        <option value="" disabled selected>Select a job role</option>
-                        <option value="backend">Backend Developer (Python/Flask/SQL)</option>
-                        <option value="data">Data Analyst (Python/Pandas/SQL)</option>
-                        <option value="marketing">Marketing Specialist (SEO/Content)</option>
-                        <option value="sales">Sales Representative (CRM/B2B)</option>
-                        <option value="hr">Human Resources (Recruitment/Payroll)</option>
-                        <option value="teacher">Teacher (Curriculum/Grading)</option>
-                    </select>
-                </div>
-
-                <div class="divider"><span>OR</span></div>
-
-                <div class="form-group">
-                    <label for="jdText">Paste Job Description (Optional)</label>
-                    <textarea id="jdText" placeholder="Paste the Job Description here to extract keywords automatically instead of selecting a role..."></textarea>
-                </div>
-
-                <button id="analyzeBtn" class="btn primary-btn">
-                    <span class="btn-text">Analyze Resume</span>
-                    <span class="loader hidden"></span>
-                </button>
-                <div id="analyzeStatus" class="status-message error"></div>
             </div>
 
-            <div id="resultsSection" class="card results-section hidden">
-                <h2>Analysis Results</h2>
-                
-                <div class="score-container">
-                    <div class="score-header">
-                        <h3>Match Score</h3>
-                        <span id="scoreValueText" class="score-number">0%</span>
-                    </div>
-                    <div class="progress-bar-bg">
-                        <div id="scoreProgressBar" class="progress-bar-fill"></div>
-                    </div>
-                </div>
-
-                <div class="results-grid">
-                    <div class="result-box success-box">
-                        <h3>✅ Skills Found</h3>
-                        <ul id="skillsFoundList" class="skill-list"></ul>
-                    </div>
-
-                    <div class="result-box warning-box">
-                        <h3>❌ Missing Skills</h3>
-                        <ul id="missingSkillsList" class="skill-list"></ul>
+            <!-- 2. CHAT WITH RESUME TAB -->
+            <div id="chat-panel" class="tab-panel hidden">
+                <div class="card chat-upload-card">
+                    <div class="form-group file-upload-wrapper">
+                        <label for="chatPdfUpload" class="file-label chat-file-label">
+                            <span id="chat-file-label-text">📂 Upload PDF to Chat</span>
+                            <input type="file" id="chatPdfUpload" accept="application/pdf">
+                        </label>
+                        <div id="chatUploadStatus" class="status-message"></div>
                     </div>
                 </div>
 
-                <div class="suggestions-box">
-                    <h3>💡 Suggestions for Improvement</h3>
-                    <ul id="suggestionsList"></ul>
+                <div class="card chat-card">
+                    <div class="chat-status-bar">
+                        <span class="status-badge badge-red" id="chatStatusBadge">🔴 No Resume Indexed</span>
+                    </div>
+
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="chat-bubble assistant-bubble">
+                            <div class="bubble-content">
+                                Hello! Please upload your resume in PDF format using the button above. Once indexed, you can ask me questions about the candidate's skills, qualifications, or experience, and I will answer strictly using the resume content.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Suggestions Prompts -->
+                    <div class="quick-prompts hidden" id="quickPrompts">
+                        <span class="quick-prompt-label">Quick questions:</span>
+                        <div class="quick-prompts-container">
+                            <button class="quick-prompt-btn">What are my core skills?</button>
+                            <button class="quick-prompt-btn">Summarize my work experience.</button>
+                            <button class="quick-prompt-btn">What backend frameworks do I know?</button>
+                        </div>
+                    </div>
+
+                    <div class="chat-input-area">
+                        <textarea id="chatInput" class="chat-textarea" placeholder="Ask a question about the resume..." rows="1" disabled></textarea>
+                        <button id="chatSendBtn" class="btn primary-btn chat-send-btn" disabled>
+                            <span class="btn-text">Send</span>
+                            <span class="loader hidden"></span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </main>
     </div>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="/static/script.js?v=2"></script>
 </body>
 </html>

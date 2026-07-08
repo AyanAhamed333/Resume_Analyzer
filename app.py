@@ -1,76 +1,166 @@
-from flask import Flask, request, jsonify, render_template
 import os
+import sys
+
+# Workaround for protobuf descriptors error with older tensorflow versions
+os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
+
+# Monkeypatches for compatibility with torch 2.0.1 and transformers 4.50+
+try:
+    import torch
+    
+    # 1. Mock torch.compiler
+    if not hasattr(torch, "compiler"):
+        class MockCompiler:
+            @staticmethod
+            def disable(recursive=False):
+                def decorator(func):
+                    return func
+                return decorator
+        torch.compiler = MockCompiler
+        
+    # 2. Patch nn.Module.load_state_dict to ignore 'assign' keyword
+    import torch.nn
+    original_load = torch.nn.Module.load_state_dict
+    
+    def patched_load(self, *args, **kwargs):
+        kwargs.pop('assign', None)
+        return original_load(self, *args, **kwargs)
+        
+    torch.nn.Module.load_state_dict = patched_load
+except ImportError:
+    pass
+
+from fastapi import FastAPI, UploadFile, File, HTTPException, Request
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from pydantic import BaseModel
+
 import PyPDF2
+from dotenv import load_dotenv
+
+# Load environment variables at startup
+load_dotenv()
+
 from database import init_db, insert_history, get_history
 from analyzer import analyze_resume
+from backend.rag import router as rag_router
 
-app = Flask(__name__)
+# Create app FIRST
+app = FastAPI()
 
-# Initialize Database on startup
+# Register new RAG endpoints router
+app.include_router(rag_router)
+
+# THEN mount static
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+templates = Jinja2Templates(directory="templates")
+
 init_db()
 
-@app.route('/')
-def home():
-    return render_template('index.html')
+# -----------------------------
+# Request Schema
+# -----------------------------
 
-@app.route('/analyze', methods=['POST'])
-def analyze():
-    data = request.get_json()
-    if not data:
-        return jsonify({"error": "Invalid input, JSON expected"}), 400
-        
-    resume_text = data.get('resume_text', '').strip()
-    role = data.get('role', '').strip()
-    jd_text = data.get('jd_text', '').strip()
-    
+class AnalyzeRequest(BaseModel):
+    resume_text: str
+    role: str = ""
+    jd_text: str = ""
+
+# -----------------------------
+# Routes
+# -----------------------------
+
+@app.get("/", response_class=HTMLResponse)
+async def home(request: Request):
+    return templates.TemplateResponse(
+        "index.html",
+        {"request": request}
+    )
+
+@app.post("/analyze")
+async def analyze(data: AnalyzeRequest):
+
+    resume_text = data.resume_text.strip()
+    role = data.role.strip()
+    jd_text = data.jd_text.strip()
+
     if not resume_text:
-        return jsonify({"error": "Resume text is empty"}), 400
-        
+        raise HTTPException(
+            status_code=400,
+            detail="Resume text is empty"
+        )
+
     if not role and not jd_text:
-        return jsonify({"error": "Please select a role or provide a Job Description"}), 400
-        
-    analysis_result = analyze_resume(resume_text, role, jd_text)
-    
+        raise HTTPException(
+            status_code=400,
+            detail="Please select a role or provide a Job Description"
+        )
+
+    analysis_result = analyze_resume(
+        resume_text,
+        role,
+        jd_text
+    )
+
     if not analysis_result:
-        return jsonify({"error": "Invalid role or unable to analyze"}), 400
-        
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid role or unable to analyze"
+        )
+
     # Store history
-    insert_history(role if role else "Custom JD", analysis_result["score"])
-    
-    return jsonify(analysis_result)
+    insert_history(
+        role if role else "Custom JD",
+        analysis_result["score"]
+    )
 
-@app.route('/upload', methods=['POST'])
-def upload_pdf():
-    if 'file' not in request.files:
-        return jsonify({"error": "No file part"}), 400
-        
-    file = request.files['file']
-    
-    if file.filename == '':
-        return jsonify({"error": "No selected file"}), 400
-        
-    if file and file.filename.lower().endswith('.pdf'):
-        try:
-            pdf_reader = PyPDF2.PdfReader(file)
-            extracted_text = ""
-            for page in pdf_reader.pages:
-                text = page.extract_text()
-                if text:
-                    extracted_text += text + "\n"
-            
-            if not extracted_text.strip():
-                return jsonify({"error": "Could not extract text from PDF, it might be an image-based PDF"}), 400
-                
-            return jsonify({"text": extracted_text})
-        except Exception as e:
-            return jsonify({"error": f"Error reading PDF file: {str(e)}"}), 500
-    else:
-        return jsonify({"error": "Invalid file type. Please upload a PDF file."}), 400
+    # Resume analyzed successfully, return result
 
-@app.route('/history', methods=['GET'])
-def history():
+    return analysis_result
+
+@app.post("/upload")
+async def upload_pdf(file: UploadFile = File(...)):
+
+    if not file.filename.lower().endswith(".pdf"):
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid file type. Please upload a PDF file."
+        )
+
+    try:
+
+        pdf_reader = PyPDF2.PdfReader(file.file)
+
+        extracted_text = ""
+
+        for page in pdf_reader.pages:
+            text = page.extract_text()
+
+            if text:
+                extracted_text += text + "\n"
+
+        if not extracted_text.strip():
+            raise HTTPException(
+                status_code=400,
+                detail="Could not extract text from PDF. It may be image-based."
+            )
+
+        return {
+            "text": extracted_text
+        }
+
+    except Exception as e:
+
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error reading PDF: {str(e)}"
+        )
+
+@app.get("/history")
+async def history():
+
     records = get_history()
-    return jsonify(records)
 
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    return records

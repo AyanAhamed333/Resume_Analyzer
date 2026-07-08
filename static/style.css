@@ -492,3 +492,326 @@ textarea:focus, select:focus {
     color: var(--ink-color);
     font-weight: bold;
 }
+
+/* -------------------------------------------------------------------------- */
+/* TAB CONTROLS (Notebook Sticky Note Style)                                  */
+/* -------------------------------------------------------------------------- */
+.tabs-nav {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 0 1rem;
+}
+
+.tab-btn {
+    background: #ffffff;
+    border: 3px solid var(--ink-color);
+    border-radius: var(--border-doodle);
+    padding: 0.8rem 1.8rem;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 1.3rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    color: var(--ink-color);
+    box-shadow: 4px 4px 0px var(--ink-color);
+}
+
+.tab-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 6px 6px 0px var(--ink-color);
+    background: #fafafa;
+}
+
+.tab-btn.active {
+    background: var(--primary-color);
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px var(--ink-color);
+}
+
+.tab-btn:focus {
+    outline: none;
+}
+
+.tab-panel {
+    transition: opacity 0.3s ease;
+}
+
+/* -------------------------------------------------------------------------- */
+/* CHAT PANEL & COMPONENT STYLING                                             */
+/* -------------------------------------------------------------------------- */
+.chat-upload-card {
+    background: #ffffff;
+    border: 3px solid var(--ink-color);
+    border-radius: var(--border-doodle-alt);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-doodle);
+}
+
+.chat-file-label {
+    background: var(--secondary-color);
+    border-style: dashed;
+}
+
+.chat-card {
+    background: #ffffff;
+    border: 3px solid var(--ink-color);
+    border-radius: var(--border-doodle);
+    padding: 2rem;
+    box-shadow: var(--shadow-doodle);
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.chat-status-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: 2px solid var(--ink-color);
+    border-radius: var(--border-doodle-alt);
+}
+
+.badge-red {
+    background: var(--warning-color);
+}
+
+.badge-green {
+    background: var(--success-color);
+}
+
+/* Chat Messages Notebook Page styling */
+.chat-messages {
+    height: 380px;
+    overflow-y: auto;
+    border: 3px solid var(--ink-color);
+    border-radius: var(--border-doodle-alt);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    background-color: #fff;
+    /* Notebook paper line decoration */
+    background-image: repeating-linear-gradient(
+        transparent,
+        transparent 28px,
+        rgba(226, 232, 240, 0.6) 29px,
+        rgba(226, 232, 240, 0.6) 30px
+    );
+    scroll-behavior: smooth;
+    position: relative;
+}
+
+/* Left margin notebook line */
+.chat-messages::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 2rem;
+    bottom: 0;
+    width: 2px;
+    background: rgba(239, 68, 68, 0.3); /* red notebook margin */
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Scrollbar styling for a handwritten look */
+.chat-messages::-webkit-scrollbar {
+    width: 10px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: var(--text-muted);
+    border: 2px solid var(--ink-color);
+    border-radius: 5px;
+}
+
+.chat-bubble {
+    max-width: 85%;
+    padding: 0.8rem 1.2rem;
+    border: 3px solid var(--ink-color);
+    position: relative;
+    z-index: 1;
+    line-height: 1.4;
+    font-size: 1.15rem;
+    box-shadow: 3px 3px 0 var(--ink-color);
+    white-space: pre-wrap;
+}
+
+.assistant-bubble {
+    align-self: flex-start;
+    background: #fff;
+    border-radius: var(--border-doodle-alt);
+    transform: rotate(0.5deg);
+    margin-left: 1.5rem; /* Pushes text past red margin line */
+}
+
+.user-bubble {
+    align-self: flex-end;
+    background: var(--secondary-color);
+    border-radius: var(--border-doodle);
+    transform: rotate(-0.5deg);
+    box-shadow: -3px 3px 0 var(--ink-color);
+}
+
+.system-bubble {
+    align-self: center;
+    background: #f1f5f9;
+    border-radius: var(--border-doodle);
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    text-align: center;
+    max-width: 95%;
+    box-shadow: none;
+}
+
+/* Source citation styles in chat bubble */
+.chat-sources {
+    margin-top: 0.6rem;
+    padding-top: 0.5rem;
+    border-top: 1.5px dashed var(--ink-color);
+    font-size: 0.95rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    color: var(--text-muted);
+}
+
+.sources-header {
+    font-weight: 600;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.sources-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.2rem;
+}
+
+.source-item {
+    background: #f1f5f9;
+    border: 2px solid var(--ink-color);
+    border-radius: 4px;
+    padding: 0.1rem 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--ink-color);
+    box-shadow: 1px 1px 0px var(--ink-color);
+    transform: rotate(0.5deg);
+}
+
+/* Quick suggestions queries tags */
+.quick-prompts {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    background: #fffbeb;
+    border: 2px dashed var(--ink-color);
+    padding: 0.8rem 1.2rem;
+    border-radius: var(--border-doodle);
+}
+
+.quick-prompt-label {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--text-muted);
+}
+
+.quick-prompts-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.quick-prompt-btn {
+    background: #ffffff;
+    border: 2px solid var(--ink-color);
+    border-radius: var(--border-doodle-alt);
+    padding: 0.4rem 0.8rem;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    color: var(--ink-color);
+}
+
+.quick-prompt-btn:hover {
+    background: var(--primary-color);
+    transform: rotate(-1deg) scale(1.03);
+}
+
+/* Interactive Input Area */
+.chat-input-area {
+    display: flex;
+    gap: 0.8rem;
+    align-items: stretch;
+}
+
+.chat-textarea {
+    flex: 1;
+    min-height: 54px;
+    height: 54px;
+    resize: none;
+    border: 3px solid var(--ink-color);
+    border-radius: var(--border-doodle-alt);
+    padding: 0.8rem 1rem;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 1.2rem;
+    line-height: 1.2;
+    overflow-y: hidden;
+}
+
+.chat-textarea:disabled {
+    background: #f1f5f9;
+    cursor: not-allowed;
+}
+
+.chat-send-btn {
+    width: 100px;
+    padding: 0;
+    height: 54px;
+    font-size: 1.3rem;
+    margin-bottom: 0;
+    align-self: center;
+}
+
+.chat-send-btn:disabled {
+    background: #e2e8f0;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 3px 3px 0 var(--ink-color);
+}
+
+@media (max-width: 600px) {
+    .tabs-nav {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .tab-btn {
+        width: 100%;
+    }
+
+    .chat-bubble {
+        max-width: 95%;
+    }
+}
+
