@@ -28,3 +28,6 @@ Thumbs.db
 # Editor folders
 .vscode/
 .idea/
+
+# Interview mentor guide (local only)
+comprehensive_interview_mentor_guide.md

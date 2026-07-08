@@ -106,8 +106,3 @@ Open **`http://localhost:5000`** in your browser and try it out!
 ├── requirements.txt    # Project dependencies list
 └── .gitignore          # Git exclusion definitions
 ```
-
----
-
-## 📄 Documentation
-For detailed explanations of files, functions, vector embeddings, and an extensive list of 100+ interview questions, check out our [Comprehensive Interview Mentor Guide](comprehensive_interview_mentor_guide.md).
