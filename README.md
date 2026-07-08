@@ -39,8 +39,8 @@ The interface features a **cute, handdrawn notebook-style pastel UI** complete w
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/YOUR_USERNAME/intelligent-resume-rag-analyzer.git
-cd intelligent-resume-rag-analyzer
+git clone https://github.com/AyanAhamed333/resume-analyzer-rag.git
+cd resume-analyzer-rag
 ```
 
 ### 2. Create and Activate Virtual Environment
